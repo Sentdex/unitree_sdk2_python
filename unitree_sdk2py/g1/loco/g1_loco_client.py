@@ -7,8 +7,26 @@ from .g1_loco_api import *
 " class SportClient
 """
 class LocoClient(Client):
-    def __init__(self):
-        super().__init__(LOCO_SERVICE_NAME, False)
+    def __init__(self, enable_lease: bool = True):
+        """Create a LocoClient.
+
+        The upstream Unitree Python wrapper supports *leases* – a safety
+        mechanism that ensures only one controller can send write-commands
+        to the robot at a time.  Recent G-series firmware releases have the
+        lease **enabled by default**, which means every *write* RPC is
+        rejected unless the client first acquires the lease.
+
+        Older versions of the wrapper hard-coded *enableLease=False* which
+        works on pre-2024 images but results in silent failures on current
+        firmware (all Set* APIs return *LEASE_DENIED* and therefore no state
+        transition happens).
+
+        We expose *enable_lease* as an argument – default **True** so that
+        new firmware just works out-of-the-box while still allowing callers
+        to opt-out when they control a robot with the legacy behaviour.
+        """
+
+        super().__init__(LOCO_SERVICE_NAME, enable_lease)
         self.first_shake_hand_stage_ = -1
 
     def Init(self):
