@@ -1,5 +1,5 @@
 # unitree_sdk2_python
-Python interface for unitree sdk2
+Python interface for unitree sdk2, modified from the official version to add more features.
 
 # Installation
 ## Dependencies
